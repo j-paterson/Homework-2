@@ -6,7 +6,7 @@ contract BettingContract {
 	address public gamblerA;
 	address public gamblerB;
 	address public oracle;
-	uint[] outcomes;
+	uint[] private outcomes;
 
 	/* Structs are custom data structures with self-defined parameters */
 	struct Bet {
@@ -48,12 +48,12 @@ contract BettingContract {
 	}
 
 	/* Gamblers place their bets, preferably after calling checkOutcomes */
-	function makeBet(uint _amount, uint _outcome) payable returns (bool) {
+	function makeBet(uint _outcome) payable returns (bool) {
 		//Each gambler can only bet once
 		//The contract owner cannot be a gambler
 		if(gamblerA==0 || gamblerB==0){
 			if(msg.sender!=owner && msg.sender!=oracle && msg.sender!=gamblerA && msg.sender!=gamblerB){
-				bets[msg.sender] = Bet(_outcome, _amount, true);
+				bets[msg.sender] = Bet(_outcome, msg.value, true);
 				if(gamblerA!=0){
 					gamblerA=msg.sender;
 				} else {
