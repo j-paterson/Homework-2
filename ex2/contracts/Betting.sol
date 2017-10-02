@@ -54,7 +54,7 @@ contract BettingContract {
 		if(gamblerA==0 || gamblerB==0){
 			if(msg.sender!=owner && msg.sender!=oracle && msg.sender!=gamblerA && msg.sender!=gamblerB){
 				bets[msg.sender] = Bet(_outcome, msg.value, true);
-				if(gamblerA!=0){
+				if(gamblerA==0){
 					gamblerA=msg.sender;
 				} else {
 					gamblerB=msg.sender;
