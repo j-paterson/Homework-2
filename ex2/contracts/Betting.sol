@@ -45,6 +45,7 @@ contract BettingContract {
 	function chooseOracle(address _oracle) OwnerOnly() returns (address) {
 		//The contract owner must be able to assign an oracle; the oracle cannot be a gambler or later place a bet
 		oracle = _oracle;
+		return oracle;
 	}
 
 	/* Gamblers place their bets, preferably after calling checkOutcomes */
@@ -93,11 +94,12 @@ contract BettingContract {
 	/* Allow anyone to withdraw their winnings safely (if they have enough) */
 	function withdraw(uint withdrawAmount) returns (uint remainingBal) {
 		//WARNING: Avenue of attack via DDOS
-		uint currentAmount = 0;
-		currentAmount = winnings[msg.sender];
+		uint currentAmount = winnings[msg.sender];
 		if(withdrawAmount<=currentAmount){
 			winnings[msg.sender]=currentAmount-withdrawAmount;
-			msg.sender.transfer(withdrawAmount);
+			if(!msg.sender.send(withdrawAmount)){
+				winnings[msg.sender]=currentAmount;
+			}
 		}
 		remainingBal = winnings[msg.sender];
 		return remainingBal;
